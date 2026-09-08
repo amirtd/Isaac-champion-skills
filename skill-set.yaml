@@ -1,0 +1,43 @@
+name: omniverse-agent-skills
+version: 0.1.0
+purpose: Prompt-to-plan-to-code Omniverse USD agent workflow
+
+pipeline:
+  - skill: omniverse-scene-request
+    produces: SceneRequest
+  - skill: omniverse-usd-planning
+    consumes: SceneRequest
+    produces: UsdPlan
+  - skill: omniverse-stage-preflight
+    consumes: UsdPlan.step
+    produces: PreflightResult
+  - skill: omniverse-rag-routing
+    consumes: [UsdPlan.step, PreflightResult]
+    produces: RagBundle
+  - skill: omniverse-usd-authoring
+    consumes: [UsdPlan.step, PreflightResult, RagBundle]
+    produces: OmniversePython
+  - skill: omniverse-code-packaging
+    consumes: OmniversePython
+    produces: PackagedCode
+  - skill: omniverse-safe-execution
+    consumes: [PackagedCode, PreflightResult]
+    produces: ExecutionResult
+  - skill: omniverse-usd-validation
+    consumes: [UsdPlan.step, ExecutionResult]
+    produces: ValidationResult
+
+conditional:
+  - skill: omniverse-cell-layout
+    when: The request contains industrial-cell spatial relationships.
+  - skill: omniverse-error-repair
+    when: Packaging, execution, or validation fails.
+
+cross_cutting:
+  - skill: omniverse-diagnostics
+    role: Canonical event taxonomy and aggregate status for every phase.
+
+stopping_conditions:
+  success: Every accepted plan step has passing validation evidence.
+  repair_limit: Stop after two ineffective repairs with the same normalized error signature.
+  safety: Stop immediately when rollback fails or persistent stage corruption is possible.
