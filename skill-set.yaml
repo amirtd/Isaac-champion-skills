@@ -1,6 +1,6 @@
 name: omniverse-agent-skills
-version: 0.1.0
-purpose: Prompt-to-plan-to-code Omniverse USD agent workflow
+version: 0.2.0
+purpose: Prompt-to-plan-to-code Omniverse USD agent workflow with warehouse layout constraints
 
 pipeline:
   - skill: omniverse-scene-request
@@ -28,8 +28,35 @@ pipeline:
     produces: ValidationResult
 
 conditional:
+  - skill: omniverse-warehouse-layout-intent
+    when: The request or documents imply facility zones, docks, aisles, or a multi-area warehouse.
+    after: omniverse-scene-request
+    before: omniverse-usd-planning
+    produces: WarehouseLayoutIntent
   - skill: omniverse-cell-layout
-    when: The request contains industrial-cell spatial relationships.
+    when: The request is a robot, palletizing, pick-and-place, or similar industrial cell with spatial relationships.
+    after: omniverse-scene-request
+    before: omniverse-usd-planning
+    produces: CellLayoutPlan
+  - skill: omniverse-material-flow
+    when: Conveyors, build zones, inbound/outbound lanes, buffers, or staging exist.
+    after: [omniverse-cell-layout, omniverse-warehouse-layout-intent]
+    before: omniverse-usd-planning
+    produces: MaterialFlowGraph
+  - skill: omniverse-reach-and-transfer
+    when: Robot or gantry pick-place or transfer height matters.
+    after: omniverse-material-flow
+    before: omniverse-usd-planning
+    produces: ReachTransferContract
+  - skill: omniverse-storage-racking
+    when: Racks, shelves, or storage bays are requested.
+    after: [omniverse-warehouse-layout-intent, omniverse-cell-layout]
+    before: omniverse-usd-planning
+    produces: StorageLayout
+  - skill: omniverse-layout-validation
+    when: One or more layout artifacts were produced for the run.
+    after: omniverse-usd-validation
+    produces: LayoutValidationResult
   - skill: omniverse-error-repair
     when: Packaging, execution, or validation fails.
 
@@ -37,7 +64,14 @@ cross_cutting:
   - skill: omniverse-diagnostics
     role: Canonical event taxonomy and aggregate status for every phase.
 
+layout_constraint_stage: |
+  After SceneRequest and before UsdPlan, apply matching layout skills:
+  WarehouseLayoutIntent and/or CellLayoutPlan, then MaterialFlowGraph,
+  ReachTransferContract, and StorageLayout as needed. Coordinates must
+  cite constraints from these artifacts. LayoutValidationResult runs
+  after USD validation when layout artifacts exist.
+
 stopping_conditions:
-  success: Every accepted plan step has passing validation evidence.
+  success: Every accepted plan step has passing validation evidence; layout checks pass or are not_applicable when artifacts exist.
   repair_limit: Stop after two ineffective repairs with the same normalized error signature.
   safety: Stop immediately when rollback fails or persistent stage corruption is possible.

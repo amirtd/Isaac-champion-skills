@@ -2,9 +2,11 @@
 
 Reusable agent skills for planning, generating, executing, validating, and repairing OpenUSD Python workflows in NVIDIA Omniverse and Isaac Sim.
 
-This repository turns a scene request into a bounded USD plan, retrieves only relevant context, generates one scoped Python step at a time, executes it safely, and records consistent validation and diagnostic evidence.
+This repository turns a scene request into layout constraints, a bounded USD plan, retrieves only relevant context, generates one scoped Python step at a time, executes it safely, and records consistent validation and diagnostic evidence.
 
 ## Skill set
+
+### Core pipeline
 
 - `omniverse-scene-request` — normalizes the user request against stage context.
 - `omniverse-usd-planning` — creates dependency-ordered, machine-checkable steps.
@@ -14,7 +16,18 @@ This repository turns a scene request into a bounded USD plan, retrieves only re
 - `omniverse-code-packaging` — enforces code-fence and interpreter contracts.
 - `omniverse-safe-execution` — provides idempotency, snapshots, and rollback tracking.
 - `omniverse-usd-validation` — verifies paths, schemas, transforms, bounds, and clearances.
-- `omniverse-cell-layout` — handles industrial robot, conveyor, pallet, and rack layout.
+
+### Layout constraints (conditional, after request, before plan)
+
+- `omniverse-warehouse-layout-intent` — facility zones, flow axes, and aisle targets.
+- `omniverse-cell-layout` — robot-cell footprint, regions, and clearance pairs (`CellLayoutPlan`).
+- `omniverse-material-flow` — inbound/outbound pairing, build zones, and transfer points.
+- `omniverse-reach-and-transfer` — labeled reach envelopes and transfer-height pairs.
+- `omniverse-storage-racking` — rack/shelf bays, loading faces, and aisle widths.
+- `omniverse-layout-validation` — measures layout contracts after USD validation.
+
+### Cross-cutting
+
 - `omniverse-error-repair` — classifies failures and prevents duplicate retries.
 - `omniverse-diagnostics` — provides the shared error, warning, and alert model.
 
@@ -36,14 +49,17 @@ Restart or reload Codex after installation.
 ## Workflow
 
 ```text
-request -> plan -> preflight -> RAG -> author -> package -> execute -> validate
-                                      ^                    |
+request
+  -> layout constraints (when industrial/facility spatial)
+  -> plan -> preflight -> RAG -> author -> package -> execute
+       -> usd validate -> layout validate
+                                      ^
                                       +------ repair <-----+
 
 diagnostics records every phase
 ```
 
-`omniverse-cell-layout` is invoked only for industrial spatial reasoning. Error repair is invoked only after packaging, execution, or validation fails.
+Layout skills propose constraints and coordinates; they do not author USD. Invoke them when the request needs warehouse or cell spatial reasoning. Error repair runs only after packaging, execution, or validation fails.
 
 ## Safety
 
@@ -51,6 +67,7 @@ diagnostics records every phase
 - Test mutating workflows on disposable or version-controlled USD layers first.
 - Do not place API keys, repository tokens, or customer data in skill files.
 - Placeholder geometry is not a substitute for production robot assets, articulation data, or engineering safety review.
+- Vendor model names are asset identifiers, not invented reach, payload, or kinematics.
 
 ## Status
 

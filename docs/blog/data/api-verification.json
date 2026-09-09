@@ -1,0 +1,40 @@
+{
+  "target": {
+    "product": "Isaac Sim",
+    "version": "5.0.0-rc.45",
+    "openusd": "24.x (usd-core ^24.8 referenced in Kit tooling)"
+  },
+  "live_pxr_import": {
+    "attempted": true,
+    "result": "failed",
+    "note": "kit/python/python.exe and python.bat both raised ModuleNotFoundError: No module named 'pxr'. USD Python bindings load with a Kit session, not a standalone interpreter."
+  },
+  "verification_method": "Cross-check each emitted callable against Isaac Sim 5.0 in-tree usage and OpenUSD schema names. Hallucinated names are those listed in the editorial brief and absent from in-tree call sites.",
+  "confirmed_present_in_isaac_sim_5_0_source": [
+    "UsdGeom.Cube.Define",
+    "UsdGeom.Xform.Define",
+    "cube.GetSizeAttr().Set",
+    "UsdGeom.Xformable.AddScaleOp(UsdGeom.XformOp.PrecisionFloat)",
+    "AddScaleOp(...).Set(Gf.Vec3f(...))",
+    "stage.GetPrimAtPath",
+    "stage.RemovePrim",
+    "UsdGeom.GetStageMetersPerUnit",
+    "UsdGeom.SetStageMetersPerUnit",
+    "UsdGeom.GetStageUpAxis",
+    "UsdGeom.SetStageUpAxis",
+    "UsdGeom.Tokens.z",
+    "UsdGeom.Tokens.default_",
+    "UsdGeom.BBoxCache",
+    "BBoxCache.ComputeWorldBound",
+    "ComputeAlignedBox().GetSize",
+    "Usd.Stage.CreateInMemory"
+  ],
+  "confirmed_absent_or_not_used_as_native_pxr": [
+    "UsdGeom.Rect",
+    "UsdGeom.Box",
+    "UsdGeom.StageComputeMetrics",
+    "Stage.RemovePrimPath",
+    "Stage.GetStageFilePath",
+    "Stage.IsEditable"
+  ]
+}

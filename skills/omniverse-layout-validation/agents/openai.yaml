@@ -1,0 +1,3 @@
+interface:
+  display_name: "Omniverse Layout Validation"
+  short_description: "Measure footprint, flow, reach, and aisle contracts against the stage"

@@ -1,0 +1,38 @@
+{
+  "source": "Derived from docs/blog/editorial-brief.md section 4. Not copied from raw agent-run JSON.",
+  "count_unit": "interpreter_events_including_retries",
+  "count_unit_note": "These are interpreter events, including retries, not independent user requests.",
+  "dataset": {
+    "json_files": 155,
+    "substantive_runs": 65,
+    "empty_network_shells": 90
+  },
+  "interpreter": {
+    "attempts": 247,
+    "successful_events": 110,
+    "failed_events": 137,
+    "runs_with_at_least_one_interpreter_failure": 29,
+    "runs_that_reached_maximum_retry": 9
+  },
+  "error_events_by_type": {
+    "AttributeError": 53,
+    "pxr.Tf.ErrorException": 34,
+    "SyntaxError": 21,
+    "Boost.Python_argument_signature": 6,
+    "validation_AssertionError": 6,
+    "RuntimeError": 5,
+    "IndentationError": 4
+  },
+  "retrieval": {
+    "retrieved_metafunction_records": 3019,
+    "unique_method_class_combinations": 486
+  },
+  "retries": {
+    "runs_with_semantically_duplicate_generated_attempts": 5,
+    "unnecessary_retries_in_those_runs": 13
+  },
+  "context_size_characters": {
+    "observed_low": 78000,
+    "observed_high": 427000
+  }
+}

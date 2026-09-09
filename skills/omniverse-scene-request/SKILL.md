@@ -14,5 +14,6 @@ Produce a compact `SceneRequest` artifact. Do not author USD in this skill.
 3. Normalize quantities, units, axes, dimensions, placement relationships, asset requirements, and acceptable placeholder geometry.
 4. Surface only ambiguities that materially change geometry or behavior. Otherwise record a conservative assumption.
 5. Reject scope expansion: requested robots, conveyors, pallets, and shelves do not imply PLCs, safety systems, animation, or simulation.
+6. When industrial or facility spatial relationships are ambiguous (zones, inbound/outbound counts, reach, aisles, rack faces), hand off to the layout constraint skills before `omniverse-usd-planning`: `omniverse-warehouse-layout-intent`, `omniverse-cell-layout`, `omniverse-material-flow`, `omniverse-reach-and-transfer`, and `omniverse-storage-racking` as applicable.
 
 Return `request_id`, `intent`, `stage_observations`, `components`, `relationships`, `constraints`, `assumptions`, `open_questions`, and `out_of_scope`. Preserve source units alongside normalized stage-unit values.

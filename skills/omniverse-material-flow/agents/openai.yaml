@@ -1,0 +1,3 @@
+interface:
+  display_name: "Omniverse Material Flow"
+  short_description: "Build inbound/outbound and build-zone flow graphs before coordinates"

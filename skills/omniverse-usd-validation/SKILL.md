@@ -5,7 +5,7 @@ description: Validate authored Omniverse USD steps with structured evidence for 
 
 # Omniverse USD Validation
 
-Validate the active step's acceptance contract plus invariants needed to detect collateral changes.
+Validate the active step's acceptance contract plus invariants needed to detect collateral changes. For footprint, flow counts, reach envelopes, and aisle contracts, use `omniverse-layout-validation` after this skill when layout artifacts exist.
 
 ## Checks
 

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Omniverse Reach and Transfer"
+  short_description: "Define reach envelopes and transfer-height pairs without inventing kinematics"

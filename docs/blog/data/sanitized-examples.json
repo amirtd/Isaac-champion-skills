@@ -1,0 +1,59 @@
+{
+  "source": "Reconstructed from docs/blog/editorial-brief.md. Labeled reconstructed; not copied from raw logs.",
+  "privacy": "No local paths, user names, credentials, UUIDs, or proprietary document contents.",
+  "examples": [
+    {
+      "id": "api-hallucination-rect",
+      "category": "api_hallucination",
+      "frequency": "53 AttributeError interpreter events across 65 substantive runs",
+      "representative_failure": "UsdGeom.Rect",
+      "related_failures": [
+        "UsdGeom.Box",
+        "UsdGeom.StageComputeMetrics",
+        "Stage.RemovePrimPath",
+        "Stage.GetStageFilePath",
+        "Stage.IsEditable",
+        "Sdf.Path.split",
+        "Sdf.Path.GetString",
+        "Sdf.Path.GetAllNames",
+        "BBox3d.ComposeAlignedRange",
+        "Xformable.GetXformOpByIndex",
+        "Cube.GetRadiusAttr"
+      ],
+      "corrected_pattern": "UsdGeom.Cube.Define(stage, path); stage.GetPrimAtPath(path); stage.RemovePrim(path)",
+      "relevant_skills": ["omniverse-rag-routing", "omniverse-usd-authoring"]
+    },
+    {
+      "id": "exec-eval-terminal-assert",
+      "category": "code_packaging",
+      "frequency": "21 SyntaxError interpreter events across 65 substantive runs",
+      "representative_failure": "Final-line assert evaluated with eval()",
+      "corrected_pattern": "Run checks before the last line; end with a result dictionary expression",
+      "relevant_skills": ["omniverse-code-packaging"]
+    },
+    {
+      "id": "units-8m-cell",
+      "category": "units_and_gf_types",
+      "frequency": "Observed in unit/scale layout errors; Gf type mismatches also appear as Boost.Python signature errors (6 events)",
+      "representative_failure": "Intended 8 m x 6 m cell authored as 8000 cm x 6000 cm; GfQuatd or Gf.Vec3d where float types are bound",
+      "corrected_pattern": "Read UsdGeom.GetStageMetersPerUnit before authoring; preserve source units; match Gf precision to the schema",
+      "relevant_skills": ["omniverse-stage-preflight", "omniverse-usd-validation"]
+    },
+    {
+      "id": "oneshot-palletizing-prompt",
+      "category": "request_and_plan",
+      "frequency": "Workflow pattern across one-shot generation failures",
+      "representative_failure": "Need a basic palletization cell with a robot arm and 2 conveyors and pallets and a shelf",
+      "corrected_pattern": "Normalize to SceneRequest, then a dependency-ordered UsdPlan; execute only the first accepted step",
+      "relevant_skills": ["omniverse-scene-request", "omniverse-usd-planning"]
+    },
+    {
+      "id": "partial-mutation-retry",
+      "category": "retry_and_mutation",
+      "frequency": "5 runs with semantically duplicate attempts accounting for 13 unnecessary retries; 9 runs reached maximum retry",
+      "representative_failure": "Re-running nearly identical code after a failed interpreter event that had already mutated the live stage",
+      "corrected_pattern": "Idempotent paths, snapshots, changed-path evidence, semantic retry detection",
+      "relevant_skills": ["omniverse-safe-execution", "omniverse-error-repair", "omniverse-diagnostics"]
+    }
+  ]
+}

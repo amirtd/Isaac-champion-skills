@@ -1,0 +1,3 @@
+interface:
+  display_name: "Omniverse Warehouse Layout Intent"
+  short_description: "Normalize facility zones, flow axes, and aisle targets before USD planning"
